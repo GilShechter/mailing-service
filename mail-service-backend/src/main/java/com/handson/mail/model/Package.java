@@ -1,7 +1,10 @@
 package com.handson.mail.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.handson.mail.util.Dates;
 import org.hibernate.validator.constraints.Length;
+import org.joda.time.LocalDateTime;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -27,6 +30,12 @@ public class Package implements Serializable {
     @Column(nullable = false, updatable = false)
     private Date createdAt = Dates.nowUTC();
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonProperty("createdAt")
+    public LocalDateTime calcCreatedAt() {
+        return Dates.atLocalTime(createdAt);
+    }
+
     @NotEmpty
     @Length(max = 95)
     private String destinationAddress;
@@ -45,10 +54,6 @@ public class Package implements Serializable {
 
     public Long getTrackingNumber() {
         return trackingNumber;
-    }
-
-    public void setTrackingNumber(Long trackingNumber) {
-        this.trackingNumber = trackingNumber;
     }
 
     public Date getCreatedAt() {
@@ -138,7 +143,6 @@ public class Package implements Serializable {
 
         public Package build() {
             Package pack =new Package();
-            pack.setTrackingNumber(trackingNumber);
             pack.setCreatedAt(createdAt);
             pack.setDestinationAddress(destinationAddress);
             pack.setDestinationZipCode(destinationZipCode);
