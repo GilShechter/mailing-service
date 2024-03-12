@@ -11,16 +11,18 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 
 @Entity
-@Table(name = "post-office")
+@Table(name = "post_office")
 public class PostOffice implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long postOfficeId;
+    private Long postOfficeId;
 
     @NotNull
     @Column(nullable = false, updatable = false)
@@ -44,7 +46,10 @@ public class PostOffice implements Serializable {
     @Length(min = 3, max = 100)
     private String name;
 
-    public long getPostOfficeId() {
+    @OneToMany(mappedBy = "postOffice", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    private Collection<Event> postOfficeEvents = new ArrayList<>();
+
+    public Long getPostOfficeId() {
         return postOfficeId;
     }
 
@@ -82,11 +87,11 @@ public class PostOffice implements Serializable {
 
 
     public static final class PostOfficeBuilder {
-        private long postOfficeId;
-        private @NotNull Date createdAt;
-        private @NotEmpty @Length(max = 95) String address;
-        private @NotEmpty @Length(min = 2, max = 11) String zipCode;
-        private @NotEmpty @Length(min = 3, max = 100) String name;
+        private Long postOfficeId;
+        private Date createdAt;
+        private String address;
+        private String zipCode;
+        private String name;
 
         private PostOfficeBuilder() {
         }
@@ -95,7 +100,7 @@ public class PostOffice implements Serializable {
             return new PostOfficeBuilder();
         }
 
-        public PostOfficeBuilder postOfficeId(long postOfficeId) {
+        public PostOfficeBuilder postOfficeId(Long postOfficeId) {
             this.postOfficeId = postOfficeId;
             return this;
         }

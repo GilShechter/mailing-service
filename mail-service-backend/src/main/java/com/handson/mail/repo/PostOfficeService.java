@@ -17,10 +17,9 @@ public class PostOfficeService {
         return repository.findAll();
     }
 
-    public Optional<PostOffice> findById(Long id) {
-        return repository.findById(id);
+    public Optional<PostOffice> findById(Long postOfficeId) {
+        return repository.findById(postOfficeId);
     }
-
 
     public PostOffice save(PostOffice postOffice) {
         return repository.save(postOffice);
