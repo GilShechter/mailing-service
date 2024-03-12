@@ -5,7 +5,6 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 
 import static com.handson.mail.model.Package.PackageBuilder.aPackage;

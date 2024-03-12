@@ -11,8 +11,6 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 
 @Entity
@@ -45,9 +43,6 @@ public class PostOffice implements Serializable {
     @NotEmpty
     @Length(min = 3, max = 100)
     private String name;
-
-    @OneToMany(mappedBy = "postOffice", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
-    private Collection<Event> postOfficeEvents = new ArrayList<>();
 
     public Long getPostOfficeId() {
         return postOfficeId;
