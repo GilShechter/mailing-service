@@ -48,7 +48,6 @@ public class Package implements Serializable {
     @Length(min = 3, max = 100)
     private String recipientName;
 
-    @NotEmpty
     @Enumerated(EnumType.STRING)
     private PackageType type;
 
@@ -147,6 +146,7 @@ public class Package implements Serializable {
             pack.setDestinationAddress(destinationAddress);
             pack.setDestinationZipCode(destinationZipCode);
             pack.setRecipientName(recipientName);
+            pack.setType(type);
             return pack;
         }
 
