@@ -35,8 +35,16 @@ public class EventController {
             throw new RuntimeException("Post Office with tracking number: " + postOfficeId + " not found.");
         Event event = eventIn.toEvent(trackingNumber, postOfficeId);
         event = eventService.save(event);
+        pack.get().setCurrentLocation(postOffice.get().getName());
+        packageService.save(pack.get());
         return new ResponseEntity<>(event, HttpStatus.OK);
     }
+
+    @RequestMapping(value = "/{trackingNumber}/events", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllEventsByTrackingNumber(@PathVariable Long trackingNumber) {
+        return new ResponseEntity<>(eventService.getAllEventsByTrackingNumber(trackingNumber), HttpStatus.OK);
+    }
+
 
 
 

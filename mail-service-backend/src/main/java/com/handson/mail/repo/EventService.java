@@ -4,6 +4,7 @@ import com.handson.mail.model.Event;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -26,6 +27,10 @@ public class EventService {
 
     public void delete(Event event) {
         repository.delete(event);
+    }
+
+    public List<Event> getAllEventsByTrackingNumber(Long trackingNumber) {
+        return repository.findAllByTrackingNumber(trackingNumber);
     }
 
 }

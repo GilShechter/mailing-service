@@ -51,6 +51,17 @@ public class Package implements Serializable {
     @Enumerated(EnumType.STRING)
     private PackageType type;
 
+    @Length(max = 95)
+    private String currentLocation;
+
+    public String getCurrentLocation() {
+        return currentLocation;
+    }
+
+    public void setCurrentLocation(String currentLocation) {
+        this.currentLocation = currentLocation;
+    }
+
     public Long getTrackingNumber() {
         return trackingNumber;
     }
@@ -102,6 +113,7 @@ public class Package implements Serializable {
         private String destinationZipCode;
         private String recipientName;
         private PackageType type;
+        private String currentLocation;
 
         private PackageBuilder() {
         }
@@ -140,6 +152,11 @@ public class Package implements Serializable {
             return this;
         }
 
+        public PackageBuilder currentLocation(String currentLocation) {
+            this.currentLocation = currentLocation;
+            return this;
+        }
+
         public Package build() {
             Package pack =new Package();
             pack.setCreatedAt(createdAt);
@@ -147,6 +164,7 @@ public class Package implements Serializable {
             pack.setDestinationZipCode(destinationZipCode);
             pack.setRecipientName(recipientName);
             pack.setType(type);
+            pack.setCurrentLocation(currentLocation);
             return pack;
         }
 

@@ -23,6 +23,17 @@ public class PackageIn implements Serializable {
     @Enumerated(EnumType.STRING)
     private PackageType type;
 
+    @Length(max = 95)
+    private String currentLocation;
+
+    public String getCurrentLocation() {
+        return currentLocation;
+    }
+
+    public void setCurrentLocation(String currentLocation) {
+        this.currentLocation = currentLocation;
+    }
+
     public String getDestinationAddress() {
         return destinationAddress;
     }
@@ -56,8 +67,8 @@ public class PackageIn implements Serializable {
     }
 
     public Package toPackage() {
-        return aPackage().createdAt(Dates.nowUTC()).destinationAddress(destinationAddress)
-                .destinationZipCode(destinationZipCode).recipientName(recipientName).type(type)
+        return aPackage().createdAt(Dates.nowUTC()).destinationAddress(destinationAddress).type(type)
+                .destinationZipCode(destinationZipCode).recipientName(recipientName).currentLocation(currentLocation)
                 .build();
     }
 
@@ -66,5 +77,6 @@ public class PackageIn implements Serializable {
         pack.setDestinationZipCode(destinationZipCode);
         pack.setRecipientName(recipientName);
         pack.setType(type);
+        pack.setCurrentLocation(currentLocation);
     }
 }
