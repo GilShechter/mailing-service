@@ -10,12 +10,6 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
-enum EventType {
-    Registration,
-    Arrival,
-    Departure,
-    Confirmation
-}
 
 @Entity
 @Table(name = "event")

@@ -53,4 +53,8 @@ public class PackageController {
         return new ResponseEntity<>("DELETED " + trackingNumber, HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/confirmed", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllConfirmedPackages() {
+        return new ResponseEntity<>(packageService.getAllConfirmed(), HttpStatus.OK);
+    }
 }

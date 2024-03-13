@@ -2,6 +2,7 @@ package com.handson.mail.controller;
 
 import com.handson.mail.model.Event;
 import com.handson.mail.model.EventIn;
+import com.handson.mail.model.EventType;
 import com.handson.mail.model.Package;
 import com.handson.mail.repo.EventService;
 import com.handson.mail.repo.PackageService;
@@ -35,8 +36,15 @@ public class EventController {
             throw new RuntimeException("Post Office with tracking number: " + postOfficeId + " not found.");
         Event event = eventIn.toEvent(trackingNumber, postOfficeId);
         event = eventService.save(event);
-        pack.get().setCurrentLocation(postOffice.get().getName());
-        packageService.save(pack.get());
+        EventType eventType = event.getEventType();
+        if (eventType == EventType.Arrival || eventType == EventType.Registration) {
+            pack.get().setCurrentLocation(postOffice.get().getName());
+            packageService.save(pack.get());
+        }
+        if (eventType == EventType.Confirmation) {
+            pack.get().setCurrentLocation(pack.get().getDestinationAddress());
+            packageService.save(pack.get());
+        }
         return new ResponseEntity<>(event, HttpStatus.OK);
     }
 
