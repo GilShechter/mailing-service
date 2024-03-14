@@ -1,11 +1,8 @@
 version: "3"
 services:
-  db:
-    image: postgres
-    environment:
-      POSTGRES_PASSWORD: postgres
+  appserver:
+    container_name: mail-server
+    hostname: localhost
+    image: gilshechter/mailing-service:001
     ports:
-      - 5432:5432
-    volumes:
-      - ./postgresdata:/var/lib/postgresql/data
-    privileged: true
+      - "8080:8080"
