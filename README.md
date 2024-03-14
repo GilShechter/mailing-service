@@ -22,6 +22,11 @@ Run with docker
 docker pull gilshechter/mailing-service:001
 ```
 
+## Video Presentation
+
+This is a technical video of me, presenting the application. Please watch here:
+
+https://www.youtube.com/watch?v=LKdcM9rNZkQ
 
 
 
