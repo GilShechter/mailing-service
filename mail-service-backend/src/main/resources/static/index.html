@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Tracking</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<h1>Event Tracking</h1>
+<form id="searchForm">
+    <label for="trackingNumber">Enter Tracking Number:<br></label>
+    <input type="text" id="trackingNumber" name="trackingId" required>
+    <button type="submit">Search</button>
+    <div id="loadingIndicator">Loading...</div> <!-- Loading indicator -->
+</form>
+<div id="eventList">
+    <!-- Event details will be displayed here -->
+</div>
+
+<script>
+    document.getElementById('searchForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const trackingNumber = document.getElementById('trackingNumber').value;
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        loadingIndicator.style.display = 'block'; // Show loading indicator
+        let packageData; // Variable to store package data
+        fetch(`/api/packages/${trackingNumber}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch package data');
+                }
+                return response.json();
+            })
+            .then(data => {
+                packageData = data; // Save package data
+                return fetch(`/api/packages/${trackingNumber}/events`);
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch events');
+                }
+                return response.json();
+            })
+            .then(events => {
+                displayEvents(events, packageData); // Pass package data to displayEvents function
+                loadingIndicator.style.display = 'none'; // Hide loading indicator
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                loadingIndicator.style.display = 'none'; // Hide loading indicator on error
+            });
+    });
+
+    function displayEvents(events, packageData) {
+        const eventList = document.getElementById('eventList');
+        eventList.innerHTML = ''; // Clear previous results
+        if (events.length === 0) {
+            eventList.innerHTML = '<p>No events found for this tracking ID.</p>';
+            return;
+        }
+        const table = document.createElement('table'); // Create table element
+        events.forEach((event, index) => {
+            const tr = document.createElement('tr'); // Create table row
+            const eventTimeTd = document.createElement('td'); // Create table cell for event time
+            eventTimeTd.textContent = new Date(event.createdAt).toLocaleString(); // Set event time
+            const iconTd = document.createElement('td'); // Create table cell for icon
+            const iconCon = document.createElement('div');
+            iconCon.classList.add('icon-con');
+            iconCon.classList.add('icon-node');
+            iconTd.appendChild(iconCon);
+            const eventTypeTd = document.createElement('td'); // Create table cell for event type
+            // Fetch post office details
+            fetch(`/api/post-office/${event.postOfficeId}`)
+                .then(response => response.json())
+                .then(postOfficeData => {
+                    if (event.eventType === "Confirmation"){
+                        eventTypeTd.textContent = `Arrived at destination: ${packageData.currentLocation}`;
+                    }else{
+                        eventTypeTd.textContent = `${event.eventType} at ${postOfficeData.name}`;
+                    }
+                    if (index === events.length - 1) {
+                        tr.classList.add('latest-event'); // Apply class to the last event
+                        iconCon.classList.add('icon-latest');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching post office details:', error);
+                    eventTypeTd.textContent = event.eventType; // Set event type without location if there's an error
+                    if (index === events.length - 1) {
+                        tr.classList.add('latest-event'); // Apply class to the last event
+                    }
+                });
+            tr.appendChild(eventTimeTd);
+            tr.appendChild(iconTd);
+            tr.appendChild(eventTypeTd);
+            table.appendChild(tr); // Append row to table
+        });
+
+        eventList.appendChild(table); // Append table to eventList
+
+        // Check if the package has arrived at its destination
+        if (packageData.currentLocation !== packageData.destinationAddress) {
+            // Add three empty rows with only icons
+            for (let i = 0; i < 3; i++) {
+                const emptyRow = document.createElement('tr');
+                const emptyIconTd = document.createElement('td');
+                const emptyIconCon = document.createElement('div');
+                emptyIconCon.classList.add('icon-dest');
+                emptyIconCon.classList.add('icon-node');
+                emptyIconTd.appendChild(emptyIconCon);
+                emptyRow.appendChild(document.createElement('td')); // Empty cell for time
+                emptyRow.appendChild(emptyIconTd);
+                emptyRow.appendChild(document.createElement('td')); // Empty cell for event type
+                table.appendChild(emptyRow);
+            }
+            // Add row displaying the destination address
+            const destinationRow = document.createElement('tr');
+            const eventTimeTd = document.createElement('td'); // Create table cell for event time
+            const iconTd = document.createElement('td'); // Create table cell for icon
+            const iconCon = document.createElement('div');
+            iconCon.classList.add('icon-con');
+            iconCon.classList.add('icon-node');
+            iconTd.appendChild(iconCon);
+            const destinationTd = document.createElement('td'); // Create table cell for event type
+            destinationTd.textContent = packageData.destinationAddress;
+            destinationRow.classList.add('destination');
+            destinationRow.appendChild(eventTimeTd);
+            destinationRow.appendChild(iconTd);
+            destinationRow.appendChild(destinationTd);
+            table.appendChild(destinationRow); // Append destination address row to table
+        }
+    }
+</script>
+</body>
+</html>
